@@ -1,0 +1,15 @@
+kind: HTTPRoute
+apiVersion: gateway.networking.k8s.io/v1beta1
+metadata:
+  name: redirect
+  namespace: default
+spec:
+  parentRefs:
+  - namespace: default
+    name: gateway
+    sectionName: http
+  rules:
+  - filters:
+    - type: RequestRedirect
+      requestRedirect:
+        scheme: https

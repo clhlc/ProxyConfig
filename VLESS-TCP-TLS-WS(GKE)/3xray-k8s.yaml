@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: xray
+  namespace: xray
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: xray
+  template:
+    metadata:
+      labels:
+        app: xray
+    spec:
+      containers:
+      - name: xray
+        image: teddysun/xray
+        ports:
+        - containerPort: 8080
+        readinessProbe:
+          tcpSocket:
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          failureThreshold: 3
+        livenessProbe:
+          tcpSocket:
+            port: 8080
+          initialDelaySeconds: 15
+          periodSeconds: 10
+          failureThreshold: 5
+        volumeMounts:
+        - name: config-volume
+          mountPath: /etc/xray/config.json
+          subPath: config.json
+          readOnly: true
+      volumes:
+      - name: config-volume
+        configMap:
+          name: xray-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: xray
+  namespace: xray
+spec:
+  selector:
+    app: xray
+  ports:
+    - name: http
+      protocol: TCP
+      port: 8080
+      targetPort: 8080
+  type: ClusterIP

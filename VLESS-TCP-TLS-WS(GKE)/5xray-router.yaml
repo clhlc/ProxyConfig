@@ -1,0 +1,22 @@
+kind: HTTPRoute
+apiVersion: gateway.networking.k8s.io/v1beta1
+metadata:
+  name: xray
+  labels:
+    gateway: gateway
+spec:
+  parentRefs:
+  - name: gateway
+    namespace: default
+    sectionName: https
+  hostnames:
+  - "example.com"
+  rules:
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /xray
+    backendRefs:
+    - kind: Service
+      name: xray
+      port: 8080

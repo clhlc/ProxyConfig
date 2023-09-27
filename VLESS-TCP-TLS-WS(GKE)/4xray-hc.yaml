@@ -1,0 +1,15 @@
+apiVersion: networking.gke.io/v1
+kind: HealthCheckPolicy
+metadata:
+  name: xray-healthcheck
+  namespace: xray
+spec:
+  default:
+    config:
+      type: TCP
+      tcpHealthCheck:
+        port: 8080
+  targetRef:
+    group: ""
+    kind: Service
+    name: xray

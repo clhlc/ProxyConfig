@@ -1,0 +1,78 @@
+{
+    "log": {
+        "loglevel": "info",
+        "access": "/var/log/xray/access.log",
+        "error": "/var/log/xray/error.log",
+        "dnsLog": false
+    },
+    "inbounds": [
+        {
+            "port": 10086,
+            "protocol": "vless",
+            "settings": {
+                "clients": [
+                    {
+                        "id": "",
+                        "flow": "xtls-rprx-vision"
+                    }
+                ],
+                "decryption": "none"
+            },
+            "streamSettings": {
+                "network": "tcp",
+                "security": "reality",
+                "realitySettings": {
+                    "dest": "gateway.icloud.com:443",
+                    "serverNames": [
+                        "gateway.icloud.com"
+                    ],
+                    "privateKey": "",
+                    "shortIds": [
+                        "",
+                        "6ba85179e30d4fc2"
+                    ]
+                }
+            },
+            "sniffing": {
+                "enabled": true,
+                "destOverride": [
+                    "http",
+                    "tls",
+                    "quic"
+                ],
+                "routeOnly": true
+            }
+        }
+    ],
+    "routing": {
+      "domainStrategy": "AsIs",
+      "rules": [
+        {
+          "type": "field",
+          "domain": 
+            [
+                "bamgrid.com" // Disney
+            ],
+          "outboundTag": "warp"
+        }
+      ]
+    },
+    "outbounds": [
+        {
+            "protocol": "freedom",
+            "tag": "direct"
+        },
+        {
+            "tag": "warp",
+            "protocol": "socks",
+            "settings": {
+                "servers": [
+                    {
+                        "address": "127.0.0.1",
+                        "port": 40000
+                    }
+                ]
+            }
+        }
+    ]
+}
