@@ -1,6 +1,6 @@
 #!/bin/bash
 
-function install_sing_box () {
+function install_sing_box() {
     latest_version_tag=$(curl -s "https://api.github.com/repos/SagerNet/sing-box/releases" | grep -Po '"tag_name": "\K.*?(?=")' | head -n 1)
     latest_version=${latest_version_tag#v}
     echo "Latest version: $latest_version"
@@ -55,12 +55,12 @@ function install_sing_box () {
     systemctl daemon-reload
 }
 
-function restart () {
+function restart() {
     systemctl restart sing-box.service
     systemctl status sing-box.service
 }
 
-function vless_reality () {
+function vless_reality() {
     key_pair=$(/usr/bin/sing-box generate reality-keypair)
     private_key=$(echo "$key_pair" | awk '/PrivateKey/ {print $2}' | tr -d '"')
     public_key=$(echo "$key_pair" | awk '/PublicKey/ {print $2}' | tr -d '"')
@@ -77,7 +77,7 @@ function vless_reality () {
 
     echo "Link: $server_link"
 
-    restart()
+    restart
 }
 
 function hy2() {
@@ -91,7 +91,7 @@ function hy2() {
 
     cat /usr/local/etc/sing-box/hy2.json
 
-    restart()
+    restart
 }
 
 function shadowtls() {
@@ -99,5 +99,5 @@ function shadowtls() {
     wget -O /usr/local/etc/sing-box/shadowtls.json https://raw.githubusercontent.com/clhlc/ProxyConfig/main/Sing-Box/ShadowTLS/config.json
     sed -i "s/PASSWORD/$password/g" /usr/local/etc/sing-box/shadowtls.json
     cat /usr/local/etc/sing-box/shadowtls.json
-    restart()
+    restart
 }
