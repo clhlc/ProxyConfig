@@ -1,0 +1,30 @@
+{
+    "inbounds": [
+        {
+            "type": "hysteria2",
+            "listen": "::",
+            "listen_port": 10003,
+            "up_mbps": 100,
+            "down_mbps": 300,
+            "users": [
+                {
+                    "password": "PASSWORD"
+                }
+            ],
+            "masquerade": "https://bing.com",
+            "tls": {
+                "enabled": true,
+                "alpn": [
+                    "h3"
+                ],
+                "certificate_path": "/etc/hysteria/fullchain.cer",
+                "key_path": "/etc/hysteria/private.key"
+            }
+        }
+    ],
+    "outbounds": [
+        {
+            "type": "direct"
+        }
+    ]
+}

@@ -1,57 +1,103 @@
 #!/bin/bash
-latest_version_tag=$(curl -s "https://api.github.com/repos/SagerNet/sing-box/releases" | grep -Po '"tag_name": "\K.*?(?=")' | head -n 1)
-latest_version=${latest_version_tag#v}
-echo "Latest version: $latest_version"
 
-arch=$(uname -m)
-echo "Architecture: $arch"
+function install_sing_box () {
+    latest_version_tag=$(curl -s "https://api.github.com/repos/SagerNet/sing-box/releases" | grep -Po '"tag_name": "\K.*?(?=")' | head -n 1)
+    latest_version=${latest_version_tag#v}
+    echo "Latest version: $latest_version"
 
-case ${arch} in
-x86_64)
-    arch="amd64"
-    ;;
-aarch64)
-    arch="arm64"
-    ;;
-armv7l)
-    arch="armv7"
-    ;;
-esac
+    arch=$(uname -m)
+    echo "Architecture: $arch"
 
-package_name="sing-box-${latest_version}-linux-${arch}"
+    case ${arch} in
+    x86_64)
+        arch="amd64"
+        ;;
+    aarch64)
+        arch="arm64"
+        ;;
+    armv7l)
+        arch="armv7"
+        ;;
+    esac
 
-url="https://github.com/SagerNet/sing-box/releases/download/${latest_version_tag}/${package_name}.tar.gz"
+    package_name="sing-box-${latest_version}-linux-${arch}"
 
-curl -sLo "/tmp/${package_name}.tar.gz" "$url"
+    url="https://github.com/SagerNet/sing-box/releases/download/${latest_version_tag}/${package_name}.tar.gz"
 
-tar -xzf "/tmp/${package_name}.tar.gz" -C /tmp
-sudo mv "/tmp/${package_name}/sing-box" /usr/bin/sing-box
+    curl -sLo "/tmp/${package_name}.tar.gz" "$url"
 
-rm -r "/tmp/${package_name}.tar.gz" "/tmp/${package_name}"
+    tar -xzf "/tmp/${package_name}.tar.gz" -C /tmp
+    mv "/tmp/${package_name}/sing-box" /usr/bin/sing-box
 
-sudo chown root:root /usr/bin/sing-box
-sudo chmod +x /usr/bin/sing-box
+    rm -r "/tmp/${package_name}.tar.gz" "/tmp/${package_name}"
 
-sudo mkdir -p /usr/local/etc/sing-box
-sudo wget https://github.com/SagerNet/sing-box/raw/main/release/config/config.json -O /usr/local/etc/sing-box/config.json
-echo "[Unit]
-Description=sing-box service
-Documentation=https://sing-box.sagernet.org
-After=network.target nss-lookup.target
+    chown root:root /usr/bin/sing-box
+    chmod +x /usr/bin/sing-box
 
-[Service]
-CapabilityBoundingSet=CAP_NET_ADMIN CAP_NET_BIND_SERVICE CAP_SYS_PTRACE CAP_DAC_READ_SEARCH
-AmbientCapabilities=CAP_NET_ADMIN CAP_NET_BIND_SERVICE CAP_SYS_PTRACE CAP_DAC_READ_SEARCH
-ExecStart=/usr/bin/sing-box -C /usr/local/etc/sing-box run
-ExecReload=/bin/kill -HUP $MAINPID
-Restart=on-failure
-RestartSec=10s
-LimitNOFILE=infinity
+    mkdir -p /usr/local/etc/sing-box
+    echo -e "{\n\n}" > /usr/local/etc/sing-box/config.json
+    echo "[Unit]
+    Description=sing-box service
+    Documentation=https://sing-box.sagernet.org
+    After=network.target nss-lookup.target
 
-[Install]
-WantedBy=multi-user.target" | sudo tee /etc/systemd/system/sing-box.service
-sudo systemctl daemon-reload
+    [Service]
+    CapabilityBoundingSet=CAP_NET_ADMIN CAP_NET_BIND_SERVICE CAP_SYS_PTRACE CAP_DAC_READ_SEARCH
+    AmbientCapabilities=CAP_NET_ADMIN CAP_NET_BIND_SERVICE CAP_SYS_PTRACE CAP_DAC_READ_SEARCH
+    ExecStart=/usr/bin/sing-box -C /usr/local/etc/sing-box run
+    ExecReload=/bin/kill -HUP $MAINPID
+    Restart=on-failure
+    RestartSec=10s
+    LimitNOFILE=infinity
+
+    [Install]
+    WantedBy=multi-user.target" | tee /etc/systemd/system/sing-box.service
+    systemctl daemon-reload
+}
+
+function restart () {
+    systemctl restart sing-box.service
+    systemctl status sing-box.service
+}
 
 function vless_reality () {
-    
+    key_pair=$(/usr/bin/sing-box generate reality-keypair)
+    private_key=$(echo "$key_pair" | awk '/PrivateKey/ {print $2}' | tr -d '"')
+    public_key=$(echo "$key_pair" | awk '/PublicKey/ {print $2}' | tr -d '"')
+    uuid=$(/usr/bin/sing-box generate uuid)
+    short_id=$(/usr/bin/sing-box generate rand --hex 8)
+    server_ip=$(curl -s https://api.ipify.org)
+    port=$((RANDOM % 1001 + 10000))
+
+    wget -O /usr/local/etc/sing-box/vless_reality.json https://raw.githubusercontent.com/clhlc/ProxyConfig/main/Sing-Box/VLESS-XTLS-uTLS-REALITY/config.json
+
+    sed -i "s/PORT/$port/g; s/UUID/$uuid/g; s/SERVER_NAME/gateway\.icloud\.com/g; s/SERVER/gateway\.icloud\.com/g; s/PRIVATE_KEY/$private_key/g; s/SHORT_ID/$short_id/g" /usr/local/etc/sing-box/vless_reality.json
+
+    server_link="vless://$uuid@$server_ip:$port?encryption=none&flow=xtls-rprx-vision&security=reality&sni=gateway.icloud.com&fp=chrome&pbk=$public_key&sid=$short_id&type=tcp&headerType=none#Sing-Box-Reality"
+
+    echo "Link: $server_link"
+
+    restart()
+}
+
+function hy2() {
+    password=$(LC_ALL=C tr -dc 'a-zA-Z0-9!@#$%^&*_+=' < /dev/urandom | fold -w 16 | head -n 1)
+
+    mkdir -p /etc/hysteria && openssl ecparam -genkey -name prime256v1 -out /etc/hysteria/private.key && openssl req -new -x509 -days 3650 -key /etc/hysteria/private.key -out /etc/hysteria/cert.pem -subj "/CN=bing.com"
+
+    wget -O /usr/local/etc/sing-box/hy2.json https://raw.githubusercontent.com/clhlc/ProxyConfig/main/Sing-Box/Hysteria2/config.json
+
+    sed -i "s/PASSWORD/$password/g" /usr/local/etc/sing-box/hy2.json
+
+    cat /usr/local/etc/sing-box/hy2.json
+
+    restart()
+}
+
+function shadowtls() {
+    password=$(LC_ALL=C tr -dc 'a-zA-Z0-9!@#$%^&*_+=' < /dev/urandom | fold -w 16 | head -n 1)
+    wget -O /usr/local/etc/sing-box/shadowtls.json https://raw.githubusercontent.com/clhlc/ProxyConfig/main/Sing-Box/ShadowTLS/config.json
+    sed -i "s/PASSWORD/$password/g" /usr/local/etc/sing-box/shadowtls.json
+    cat /usr/local/etc/sing-box/shadowtls.json
+    restart()
 }

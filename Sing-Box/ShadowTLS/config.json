@@ -1,0 +1,32 @@
+{
+    "inbounds": [
+        {
+            "type": "shadowtls",
+            "listen_port": 10004,
+            "detour": "shadowsocks-in",
+            "version": 3,
+            "users": [
+                {
+                    "password": "PASSWORD"
+                }
+            ],
+            "handshake": {
+                "server": "www.bing.com",
+                "server_port": 443
+            },
+            "strict_mode": true
+        },
+        {
+            "type": "shadowsocks",
+            "tag": "shadowsocks-in",
+            "listen": "127.0.0.1",
+            "method": "2022-blake3-aes-128-gcm",
+            "password": "PASSWORD"
+        }
+    ],
+    "outbounds": [
+        {
+            "type": "direct"
+        }
+    ]
+}
