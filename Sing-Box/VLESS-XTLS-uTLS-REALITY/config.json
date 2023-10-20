@@ -3,7 +3,7 @@
         {
             "type": "vless",
             "listen": "::",
-            "listen_port": "$port",
+            "listen_port": "PORT",
             "users": [
                 {
                     "uuid": "UUID",
