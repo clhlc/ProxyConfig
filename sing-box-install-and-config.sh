@@ -1,5 +1,8 @@
 #!/bin/bash
 
+server_ip=$(curl -s https://api.ipify.org)
+uuid=$(/usr/bin/sing-box generate uuid)
+
 function install_sing_box() {
     latest_version_tag=$(curl -s "https://api.github.com/repos/SagerNet/sing-box/releases" | grep -Po '"tag_name": "\K.*?(?=")' | head -n 1)
     latest_version=${latest_version_tag#v}
@@ -61,11 +64,13 @@ function restart() {
 
 function vless_reality() {
     key_pair=$(/usr/bin/sing-box generate reality-keypair)
+
     private_key=$(echo "$key_pair" | awk '/PrivateKey/ {print $2}' | tr -d '"')
+
     public_key=$(echo "$key_pair" | awk '/PublicKey/ {print $2}' | tr -d '"')
-    uuid=$(/usr/bin/sing-box generate uuid)
+
     short_id=$(/usr/bin/sing-box generate rand --hex 8)
-    server_ip=$(curl -s https://api.ipify.org)
+    
     port=$((RANDOM % 1001 + 10000))
 
     wget -O /usr/local/etc/sing-box/vless_reality.json https://raw.githubusercontent.com/clhlc/ProxyConfig/main/Sing-Box/VLESS-XTLS-uTLS-REALITY/config.json
@@ -90,13 +95,19 @@ function hy2() {
 
     cat /usr/local/etc/sing-box/hy2.json
 
+    echo "Link: hysteria2://$password@$server_ip:10003?insecure=1&obfs=none#Hysteria2-UDP"
+
     restart
 }
 
 function shadowtls() {
     password=$(/usr/bin/sing-box  generate  rand --base64 32)
+
     wget -O /usr/local/etc/sing-box/shadowtls.json https://raw.githubusercontent.com/clhlc/ProxyConfig/main/Sing-Box/ShadowTLS/config.json
+
     sed -i "s/PASSWORD/$password/g" /usr/local/etc/sing-box/shadowtls.json
+
     cat /usr/local/etc/sing-box/shadowtls.json
+
     restart
 }
