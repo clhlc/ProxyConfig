@@ -12,7 +12,7 @@
                 }
             ],
             "handshake": {
-                "server": "www.bing.com",
+                "server": "www.apple.com",
                 "server_port": 443
             },
             "strict_mode": true
@@ -21,7 +21,7 @@
             "type": "shadowsocks",
             "tag": "shadowsocks-in",
             "listen": "127.0.0.1",
-            "method": "2022-blake3-aes-128-gcm",
+            "method": "2022-blake3-chacha20-poly1305",
             "password": "PASSWORD"
         }
     ],
