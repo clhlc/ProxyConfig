@@ -57,7 +57,6 @@ function install_sing_box() {
 
 function restart() {
     systemctl restart sing-box.service
-    systemctl status sing-box.service
 }
 
 function vless_reality() {
@@ -95,7 +94,7 @@ function hy2() {
 }
 
 function shadowtls() {
-    password=$(LC_ALL=C tr -dc 'a-zA-Z0-9!@#$%^&*_+=' < /dev/urandom | fold -w 16 | head -n 1)
+    password=$(/usr/bin/sing-box  generate  rand --base64 32)
     wget -O /usr/local/etc/sing-box/shadowtls.json https://raw.githubusercontent.com/clhlc/ProxyConfig/main/Sing-Box/ShadowTLS/config.json
     sed -i "s/PASSWORD/$password/g" /usr/local/etc/sing-box/shadowtls.json
     cat /usr/local/etc/sing-box/shadowtls.json

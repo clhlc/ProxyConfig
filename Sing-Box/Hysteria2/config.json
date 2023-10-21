@@ -17,7 +17,7 @@
                 "alpn": [
                     "h3"
                 ],
-                "certificate_path": "/etc/hysteria/fullchain.cer",
+                "certificate_path": "/etc/hysteria/cert.pem",
                 "key_path": "/etc/hysteria/private.key"
             }
         }

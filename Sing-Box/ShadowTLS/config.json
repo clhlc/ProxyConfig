@@ -2,6 +2,7 @@
     "inbounds": [
         {
             "type": "shadowtls",
+            "listen": "::",
             "listen_port": 10004,
             "detour": "shadowsocks-in",
             "version": 3,
