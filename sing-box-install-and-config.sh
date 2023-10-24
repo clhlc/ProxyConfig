@@ -126,9 +126,9 @@ function vless_reality() {
 
     sed -i "s/PORT/$port/g; s/UUID/$uuid/g; s/SERVER_NAME/gateway\.icloud\.com/g; s/SERVER/gateway\.icloud\.com/g; s/PRIVATE_KEY/$private_key/g; s/SHORT_ID/$short_id/g" /usr/local/etc/sing-box/$conf_name.json
 
-    server_link="vless://$uuid@$server_ip:$port?encryption=none&flow=xtls-rprx-vision&security=reality&sni=gateway.icloud.com&fp=chrome&pbk=$public_key&sid=$short_id&type=tcp&headerType=none#Sing-Box-Reality"
+    server_link="vless://$uuid@$server_ip:$port?security=reality&flow=xtls-rprx-vision&sni=gateway.icloud.com&fp=chrome&pbk=$public_key&sid=$short_id&type=tcp&headerType=none#Sing-Box-Reality"
 
-    echo "Link: $server_link"
+    red "Link: $server_link"
 
     check_config_validate $conf_name
     restart
