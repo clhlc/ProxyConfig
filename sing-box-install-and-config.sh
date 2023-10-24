@@ -1,7 +1,47 @@
 #!/bin/bash
+export LANG=en_US.UTF-8
 
-server_ip=$(curl -s https://api.ipify.org)
-uuid=$(/usr/bin/sing-box generate uuid)
+RED="\033[31m"
+GREEN="\033[32m"
+YELLOW="\033[33m"
+PLAIN="\033[0m"
+
+red(){
+    echo -e "\033[31m\033[01m$1\033[0m"
+}
+
+green(){
+    echo -e "\033[32m\033[01m$1\033[0m"
+}
+
+yellow(){
+    echo -e "\033[33m\033[01m$1\033[0m"
+}
+
+function common_command() {
+    server_ip=$(curl -s https://api.ipify.org)
+    uuid=$(/usr/bin/sing-box generate uuid)
+    password=$(LC_ALL=C tr -dc 'a-zA-Z0-9!@#$%^&*_+=' < /dev/urandom | fold -w 16 | head -n 1)
+}
+
+function check_config_exit() {
+    conf_file="/usr/local/etc/sing-box/$1.json"
+    if [[ -e $conf_file ]]; then
+        yellow "配置文件已存在，重新配置请删除: $conf_file"
+        exit 1
+    fi
+}
+
+function check_config_validate() {
+    conf_file="/usr/local/etc/sing-box/$1.json"
+
+    /usr/bin/sing-box check -c $conf_file
+
+    if [[ $? != 0 ]]; then
+        red 配置文件不正确，请检查: $conf_file。
+        exit 2
+    fi
+}
 
 function install_sing_box() {
     latest_version_tag=$(curl -s "https://api.github.com/repos/SagerNet/sing-box/releases" | grep -Po '"tag_name": "\K.*?(?=")' | head -n 1)
@@ -60,9 +100,17 @@ function install_sing_box() {
 
 function restart() {
     systemctl restart sing-box.service
+    sleep 2
+    systemctl status sing-box.service --no-pager -l
 }
 
 function vless_reality() {
+
+    conf_name="vless_reality"
+    check_config_exit $conf_name
+    check_config_validate $conf_name
+    common_command
+
     key_pair=$(/usr/bin/sing-box generate reality-keypair)
 
     private_key=$(echo "$key_pair" | awk '/PrivateKey/ {print $2}' | tr -d '"')
@@ -73,9 +121,9 @@ function vless_reality() {
     
     port=$((RANDOM % 1001 + 10000))
 
-    wget -O /usr/local/etc/sing-box/vless_reality.json https://raw.githubusercontent.com/clhlc/ProxyConfig/main/Sing-Box/VLESS-XTLS-uTLS-REALITY/config.json
+    wget -O /usr/local/etc/sing-box/$conf_name.json https://raw.githubusercontent.com/clhlc/ProxyConfig/main/Sing-Box/VLESS-XTLS-uTLS-REALITY/config.json
 
-    sed -i "s/PORT/$port/g; s/UUID/$uuid/g; s/SERVER_NAME/gateway\.icloud\.com/g; s/SERVER/gateway\.icloud\.com/g; s/PRIVATE_KEY/$private_key/g; s/SHORT_ID/$short_id/g" /usr/local/etc/sing-box/vless_reality.json
+    sed -i "s/PORT/$port/g; s/UUID/$uuid/g; s/SERVER_NAME/gateway\.icloud\.com/g; s/SERVER/gateway\.icloud\.com/g; s/PRIVATE_KEY/$private_key/g; s/SHORT_ID/$short_id/g" /usr/local/etc/sing-box/$conf_name.json
 
     server_link="vless://$uuid@$server_ip:$port?encryption=none&flow=xtls-rprx-vision&security=reality&sni=gateway.icloud.com&fp=chrome&pbk=$public_key&sid=$short_id&type=tcp&headerType=none#Sing-Box-Reality"
 
@@ -85,15 +133,19 @@ function vless_reality() {
 }
 
 function hy2() {
-    password=$(LC_ALL=C tr -dc 'a-zA-Z0-9!@#$%^&*_+=' < /dev/urandom | fold -w 16 | head -n 1)
+
+    conf_name="hy2"
+    check_config_exit $conf_name
+    check_config_validate $conf_name
+    common_command
 
     mkdir -p /etc/hysteria && openssl ecparam -genkey -name prime256v1 -out /etc/hysteria/private.key && openssl req -new -x509 -days 3650 -key /etc/hysteria/private.key -out /etc/hysteria/cert.pem -subj "/CN=bing.com"
 
-    wget -O /usr/local/etc/sing-box/hy2.json https://raw.githubusercontent.com/clhlc/ProxyConfig/main/Sing-Box/Hysteria2/config.json
+    wget -O /usr/local/etc/sing-box/$conf_name.json https://raw.githubusercontent.com/clhlc/ProxyConfig/main/Sing-Box/Hysteria2/config.json
 
-    sed -i "s/PASSWORD/$password/g" /usr/local/etc/sing-box/hy2.json
+    sed -i "s/PASSWORD/$password/g" /usr/local/etc/sing-box/$conf_name.json
 
-    cat /usr/local/etc/sing-box/hy2.json
+    cat /usr/local/etc/sing-box/$conf_name.json
 
     echo "Link: hysteria2://$password@$server_ip:10003?insecure=1&obfs=none#Hysteria2-UDP"
 
@@ -101,13 +153,71 @@ function hy2() {
 }
 
 function shadowtls() {
-    password=$(/usr/bin/sing-box  generate  rand --base64 32)
 
-    wget -O /usr/local/etc/sing-box/shadowtls.json https://raw.githubusercontent.com/clhlc/ProxyConfig/main/Sing-Box/ShadowTLS/config.json
+    conf_name="shadowtls"
 
-    sed -i "s/PASSWORD/$password/g" /usr/local/etc/sing-box/shadowtls.json
+    check_config_exit $conf_name
+    check_config_validate $conf_name
 
-    cat /usr/local/etc/sing-box/shadowtls.json
+    shadowtls_password=$(/usr/bin/sing-box  generate  rand --base64 32)
+
+    wget -O /usr/local/etc/sing-box/$conf_name.json https://raw.githubusercontent.com/clhlc/ProxyConfig/main/Sing-Box/ShadowTLS/config.json
+
+    sed -i "s/PASSWORD/$shadowtls_password/g" /usr/local/etc/sing-box/$conf_name.json
+
+    cat /usr/local/etc/sing-box/$conf_name.json
 
     restart
 }
+
+function test() {
+    green "begin"
+    check_config_exit test
+    green "end"
+}
+
+function tuic-v5() {
+
+    conf_name="tuic-v5"
+
+    common_command $conf_name
+    check_config_exit $conf_name
+    check_config_validate $conf_name
+
+    
+    wget -O /usr/local/etc/sing-box/$conf_name.json https://raw.githubusercontent.com/clhlc/ProxyConfig/main/Sing-Box/TUIC/config.json
+
+    sed -i "s/PASSWORD/$password/g" /usr/local/etc/sing-box/$conf_name
+    sed -i "s/UUID/$uuid/g" /usr/local/etc/sing-box/$conf_name
+
+    restart
+}
+
+menu() {
+    clear
+    echo "#############################################################"
+    echo -e "#               ${RED}Sing-Box 一键安装脚本${PLAIN}                       #"
+    echo -e "# ${GREEN}作者${PLAIN}: clhlc                                               #"
+    echo -e "# ${GREEN}GitHub 项目${PLAIN}: https://github.com/clhlc/ProxyConfig         #"
+    echo "#############################################################"
+    echo ""
+    echo -e " ${GREEN}1.${PLAIN} 安装 Sing-Box"
+    echo -e " ${GREEN}2.${PLAIN} 配置 Vless+XTLS+uTLS+Reality"
+    echo -e " ${GREEN}3.${PLAIN} 配置 Hysteria2"
+    echo -e " ${GREEN}4.${PLAIN} 配置 ShadowTLS"
+    echo -e " ${GREEN}5.${PLAIN} 配置 Tuic V5"
+    echo -e " ${GREEN}0.${PLAIN} 退出脚本"
+    echo ""
+    read -rp "请输入选项 [0-7]: " menuInput
+    case $menuInput in
+        1 ) install_sing_box ;;
+        2 ) vless_reality ;;
+        3 ) hy2 ;;
+        4 ) shadowtls ;;
+        5 ) tuic ;;
+        99 ) test ;;
+        * ) exit 1 ;;
+    esac
+}
+
+menu

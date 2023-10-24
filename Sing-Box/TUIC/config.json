@@ -1,0 +1,29 @@
+{
+    "inbounds": [
+        {
+            "type": "tuic",
+            "listen": "::",
+            "listen_port": 443,
+            "users": [
+                {
+                    "uuid": "UUID",
+                    "password": "PASSWORD"
+                }
+            ],
+            "congestion_control": "bbr",
+            "tls": {
+                "enabled": true,
+                "alpn": [
+                    "h3"
+                ],
+                "certificate_path": "/etc/tuic/fullchain.cer",
+                "key_path": "/etc/tuic/private.key"
+            }
+        }
+    ],
+    "outbounds": [
+        {
+            "type": "direct"
+        }
+    ]
+}
