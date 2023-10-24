@@ -96,6 +96,8 @@ function install_sing_box() {
     [Install]
     WantedBy=multi-user.target" | tee /etc/systemd/system/sing-box.service
     systemctl daemon-reload
+
+    green 安装sing-box完成！
 }
 
 function restart() {
@@ -108,7 +110,6 @@ function vless_reality() {
 
     conf_name="vless_reality"
     check_config_exit $conf_name
-    check_config_validate $conf_name
     common_command
 
     key_pair=$(/usr/bin/sing-box generate reality-keypair)
@@ -129,6 +130,7 @@ function vless_reality() {
 
     echo "Link: $server_link"
 
+    check_config_validate $conf_name
     restart
 }
 
@@ -136,7 +138,6 @@ function hy2() {
 
     conf_name="hy2"
     check_config_exit $conf_name
-    check_config_validate $conf_name
     common_command
 
     mkdir -p /etc/hysteria && openssl ecparam -genkey -name prime256v1 -out /etc/hysteria/private.key && openssl req -new -x509 -days 3650 -key /etc/hysteria/private.key -out /etc/hysteria/cert.pem -subj "/CN=bing.com"
@@ -149,6 +150,7 @@ function hy2() {
 
     echo "Link: hysteria2://$password@$server_ip:10003?insecure=1&obfs=none#Hysteria2-UDP"
 
+    check_config_validate $conf_name
     restart
 }
 
@@ -157,7 +159,6 @@ function shadowtls() {
     conf_name="shadowtls"
 
     check_config_exit $conf_name
-    check_config_validate $conf_name
 
     shadowtls_password=$(/usr/bin/sing-box  generate  rand --base64 32)
 
@@ -167,6 +168,7 @@ function shadowtls() {
 
     cat /usr/local/etc/sing-box/$conf_name.json
 
+    check_config_validate $conf_name
     restart
 }
 
@@ -182,7 +184,6 @@ function tuic-v5() {
 
     common_command $conf_name
     check_config_exit $conf_name
-    check_config_validate $conf_name
 
     
     wget -O /usr/local/etc/sing-box/$conf_name.json https://raw.githubusercontent.com/clhlc/ProxyConfig/main/Sing-Box/TUIC/config.json
@@ -190,6 +191,7 @@ function tuic-v5() {
     sed -i "s/PASSWORD/$password/g" /usr/local/etc/sing-box/$conf_name
     sed -i "s/UUID/$uuid/g" /usr/local/etc/sing-box/$conf_name
 
+    check_config_validate $conf_name
     restart
 }
 
