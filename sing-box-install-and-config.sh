@@ -6,22 +6,22 @@ GREEN="\033[32m"
 YELLOW="\033[33m"
 PLAIN="\033[0m"
 
-red(){
+red() {
     echo -e "\033[31m\033[01m$1\033[0m"
 }
 
-green(){
+green() {
     echo -e "\033[32m\033[01m$1\033[0m"
 }
 
-yellow(){
+yellow() {
     echo -e "\033[33m\033[01m$1\033[0m"
 }
 
 function common_command() {
     server_ip=$(curl -s https://api.ipify.org)
     uuid=$(/usr/bin/sing-box generate uuid)
-    password=$(LC_ALL=C tr -dc 'a-zA-Z0-9!@#$%^&*_+=' < /dev/urandom | fold -w 16 | head -n 1)
+    password=$(LC_ALL=C tr -dc 'a-zA-Z0-9!@#$%^&*_+=' </dev/urandom | fold -w 16 | head -n 1)
 }
 
 function check_config_exit() {
@@ -78,7 +78,7 @@ function install_sing_box() {
     chmod +x /usr/bin/sing-box
 
     mkdir -p /usr/local/etc/sing-box
-    echo -e "{\n\n}" > /usr/local/etc/sing-box/config.json
+    echo -e "{\n\n}" >/usr/local/etc/sing-box/config.json
     echo "[Unit]
     Description=sing-box service
     Documentation=https://sing-box.sagernet.org
@@ -119,7 +119,7 @@ function vless_reality() {
     public_key=$(echo "$key_pair" | awk '/PublicKey/ {print $2}' | tr -d '"')
 
     short_id=$(/usr/bin/sing-box generate rand --hex 8)
-    
+
     port=$((RANDOM % 1001 + 10000))
 
     wget -O /usr/local/etc/sing-box/$conf_name.json https://raw.githubusercontent.com/clhlc/ProxyConfig/main/Sing-Box/VLESS-XTLS-uTLS-REALITY/config.json
@@ -160,7 +160,7 @@ function shadowtls() {
 
     check_config_exit $conf_name
 
-    shadowtls_password=$(/usr/bin/sing-box  generate  rand --base64 32)
+    shadowtls_password=$(/usr/bin/sing-box generate rand --base64 32)
 
     wget -O /usr/local/etc/sing-box/$conf_name.json https://raw.githubusercontent.com/clhlc/ProxyConfig/main/Sing-Box/ShadowTLS/config.json
 
@@ -185,7 +185,6 @@ function tuic-v5() {
     common_command $conf_name
     check_config_exit $conf_name
 
-    
     wget -O /usr/local/etc/sing-box/$conf_name.json https://raw.githubusercontent.com/clhlc/ProxyConfig/main/Sing-Box/TUIC/config.json
 
     sed -i "s/PASSWORD/$password/g" /usr/local/etc/sing-box/$conf_name
@@ -212,13 +211,13 @@ menu() {
     echo ""
     read -rp "请输入选项 [0-7]: " menuInput
     case $menuInput in
-        1 ) install_sing_box ;;
-        2 ) vless_reality ;;
-        3 ) hy2 ;;
-        4 ) shadowtls ;;
-        5 ) tuic ;;
-        99 ) test ;;
-        * ) exit 1 ;;
+    1) install_sing_box ;;
+    2) vless_reality ;;
+    3) hy2 ;;
+    4) shadowtls ;;
+    5) tuic ;;
+    99) test ;;
+    *) exit 1 ;;
     esac
 }
 
