@@ -139,7 +139,7 @@ function hy2() {
     conf_name="hy2"
     check_config_exit $conf_name
     common_command
-    sni="https://bing.com"
+    sni="https:\/\/bing.com"
 
     mkdir -p /etc/hysteria && openssl ecparam -genkey -name prime256v1 -out /etc/hysteria/private.key && openssl req -new -x509 -days 3650 -key /etc/hysteria/private.key -out /etc/hysteria/cert.pem -subj "/CN=bing.com"
 
