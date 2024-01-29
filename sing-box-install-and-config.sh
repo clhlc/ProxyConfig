@@ -154,6 +154,10 @@ function hy2() {
 
     red "Link: hysteria2://$password@$server_ip:10003?insecure=1&obfs=none&peer=$peer#Hysteria2($server_ip)"
 
+    green "二维码"
+
+    qrencode -o - -t ANSIUTF8 "hysteria2://$password@$server_ip:10003?insecure=1&obfs=none&peer=$peer#Hysteria2($server_ip)"
+
     check_config_validate $conf_name
     restart
 }
