@@ -148,7 +148,7 @@ function hy2() {
 
     cat /usr/local/etc/sing-box/$conf_name.json
 
-    echo "Link: hysteria2://$password@$server_ip:10003?insecure=1&obfs=none#Hysteria2-UDP"
+    echo "Link: hysteria2://$password@$server_ip:10003?insecure=1&obfs=none&sni=https://bing.com#Hysteria2-UDP"
 
     check_config_validate $conf_name
     restart
