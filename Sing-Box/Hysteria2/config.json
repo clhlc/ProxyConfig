@@ -11,7 +11,7 @@
                     "password": "PASSWORD"
                 }
             ],
-            "masquerade": "https://bing.com",
+            "masquerade": "SNI",
             "tls": {
                 "enabled": true,
                 "alpn": [
