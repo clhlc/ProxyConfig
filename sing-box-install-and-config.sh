@@ -140,12 +140,13 @@ function hy2() {
     check_config_exit $conf_name
     common_command
     sni="bing.com"
+    masquerade="https:\/\/bing.com"
 
     mkdir -p /etc/hysteria && openssl ecparam -genkey -name prime256v1 -out /etc/hysteria/private.key && openssl req -new -x509 -days 3650 -key /etc/hysteria/private.key -out /etc/hysteria/cert.pem -subj "/CN=bing.com"
 
     wget -O /usr/local/etc/sing-box/$conf_name.json https://raw.githubusercontent.com/clhlc/ProxyConfig/main/Sing-Box/Hysteria2/config.json
 
-    sed -i "s/PASSWORD/$password/g; s/SNI/$sni/g" /usr/local/etc/sing-box/$conf_name.json
+    sed -i "s/PASSWORD/$password/g; s/SNI/$masquerade/g" /usr/local/etc/sing-box/$conf_name.json
 
     cat /usr/local/etc/sing-box/$conf_name.json
 
