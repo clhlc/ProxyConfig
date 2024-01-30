@@ -21,7 +21,7 @@ yellow() {
 function common_command() {
     server_ip=$(curl -s https://api.ipify.org)
     uuid=$(/usr/bin/sing-box generate uuid)
-    password=$(LC_ALL=C tr -dc 'a-zA-Z0-9!@#$%^&*_+=' </dev/urandom | fold -w 16 | head -n 1)
+    password=$(LC_ALL=C tr -dc 'a-zA-Z0-9' </dev/urandom | fold -w 16 | head -n 1)
 }
 
 function check_config_exit() {
