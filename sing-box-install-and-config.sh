@@ -193,7 +193,7 @@ function shadowtls() {
     check_config_validate $conf_name
     restart
 
-    server_link="ss://2022-blake3-chacha20-poly1305:$shadowtls_password@$server_ip:10004?shadow-tls={"version":"3","host":"www.apple.com","password":"$shadowtls_password"}
+    server_link="ss://2022-blake3-chacha20-poly1305:$shadowtls_password@$server_ip:10004?shadow-tls={"version":"3","host":"www.apple.com","password":"$shadowtls_password"}"
 
     gen_url_qr $server_link
 }
@@ -220,9 +220,9 @@ function tuic-v5() {
     restart
 }
 
-menu() {
+function menu() {
     clear
-    echo "#############################################################"
+    echo -e "#############################################################"
     echo -e "#               ${RED}Sing-Box 一键安装脚本${PLAIN}                       #"
     echo -e "# ${GREEN}作者${PLAIN}: clhlc                                               #"
     echo -e "# ${GREEN}GitHub 项目${PLAIN}: https://github.com/clhlc/ProxyConfig         #"
