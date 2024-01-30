@@ -11,6 +11,7 @@ bash <(wget -qO- https://raw.githubusercontent.com/clhlc/ProxyConfig/main/sing-b
 # GitHub 项目: https://github.com/clhlc/ProxyConfig         #
 #############################################################
 
+ 0. 初始化 VPS
  1. 安装 Sing-Box
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  2. 配置 Vless+XTLS+uTLS+Reality(推荐)
@@ -18,7 +19,9 @@ bash <(wget -qO- https://raw.githubusercontent.com/clhlc/ProxyConfig/main/sing-b
  4. 配置 SS+ShadowTLS
  5. 配置 Tuic V5
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
- 0. 退出脚本
+ 10. 退出脚本
+
+请输入选项 [0-5]:
 ```
 ## 其他
 
