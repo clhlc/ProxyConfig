@@ -7,15 +7,15 @@ YELLOW="\033[33m"
 PLAIN="\033[0m"
 
 red() {
-    echo -e "\033[31m\033[01m$1\033[0m"
+    echo -e "\033[31m\033[01m$*\033[0m"
 }
 
 green() {
-    echo -e "\033[32m\033[01m$1\033[0m"
+    echo -e "\033[32m\033[01m$*\033[0m"
 }
 
 yellow() {
-    echo -e "\033[33m\033[01m$1\033[0m"
+    echo -e "\033[33m\033[01m$*\033[0m"
 }
 
 function init_vps() {
@@ -47,12 +47,12 @@ function gen_url_qr() {
     green "1、粘贴URL添加节点"
     echo ""
 
-    red "$@"
+    red "$*"
 
     green "2、扫描二维码添加节点"
     echo ""
 
-    qrencode -t ANSIUTF8 "$@"
+    qrencode -t ANSIUTF8 "$*"
 }
 
 function check_config_validate() {
