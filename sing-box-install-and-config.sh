@@ -179,10 +179,20 @@ function hy2() {
 function shadowtls() {
 
     conf_name="shadowtls"
-
+    common_command
     check_config_exit $conf_name
 
-    shadowtls_password=$(/usr/bin/sing-box generate rand --base64 32)
+    while true
+    do
+        shadowtls_password=$(/usr/bin/sing-box generate rand --base64 32)
+            if [[ $shadowtls_password =~ "/" ]]; then
+                shadowtls_password=$(/usr/bin/sing-box generate rand --base64 32)
+                echo $shadowtls_password
+            else
+                echo $shadowtls_password
+                break
+            fi
+    done
 
     wget -O /usr/local/etc/sing-box/$conf_name.json https://raw.githubusercontent.com/clhlc/ProxyConfig/main/Sing-Box/ShadowTLS/config.json
 
