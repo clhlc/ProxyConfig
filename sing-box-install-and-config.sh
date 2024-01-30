@@ -18,6 +18,15 @@ yellow() {
     echo -e "\033[33m\033[01m$1\033[0m"
 }
 
+function init_vps() {
+    red 使用root用户执行
+
+    apt update
+    apt install -yqq qrencode net-tools
+
+    iptables -F
+}
+
 function common_command() {
     server_ip=$(curl -s https://api.ipify.org)
     uuid=$(/usr/bin/sing-box generate uuid)
@@ -235,6 +244,7 @@ function menu() {
     echo -e "# ${GREEN}GitHub 项目${PLAIN}: https://github.com/clhlc/ProxyConfig         #"
     echo "#############################################################"
     echo ""
+    echo -e " ${GREEN}0.${PLAIN} 初始化 VPS"
     echo -e " ${GREEN}1.${PLAIN} 安装 Sing-Box"
     echo -e " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
     echo -e " ${GREEN}2.${PLAIN} 配置 Vless+XTLS+uTLS+Reality${RED}(推荐)"
@@ -242,17 +252,18 @@ function menu() {
     echo -e " ${GREEN}4.${PLAIN} 配置 SS+ShadowTLS"
     echo -e " ${GREEN}5.${PLAIN} 配置 Tuic V5"
     echo -e " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-    echo -e " ${GREEN}0.${PLAIN} 退出脚本"
+    echo -e " ${GREEN}10.${PLAIN} 退出脚本"
     echo ""
-    read -rp "请输入选项 [0-7]: " menuInput
+    read -rp "请输入选项 [0-5]: " menuInput
     case $menuInput in
+    0) init_vps ;;
     1) install_sing_box ;;
     2) vless_reality ;;
     3) hy2 ;;
     4) shadowtls ;;
     5) tuic ;;
     99) test ;;
-    *) exit 1 ;;
+    *) exit 0 ;;
     esac
 }
 
