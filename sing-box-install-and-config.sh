@@ -47,12 +47,12 @@ function gen_url_qr() {
     green "1、粘贴URL添加节点"
     echo ""
 
-    red $1
+    red "$@"
 
     green "2、扫描二维码添加节点"
     echo ""
 
-    qrencode -t ANSIUTF8 $1
+    qrencode -t ANSIUTF8 "$@"
 }
 
 function check_config_validate() {
