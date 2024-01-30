@@ -32,6 +32,18 @@ function check_config_exit() {
     fi
 }
 
+function gen_url_qr() {
+    green "1、粘贴URL添加节点"
+    echo ""
+
+    red $1
+
+    green "2、扫描二维码添加节点"
+    echo ""
+
+    qrencode -t ANSIUTF8 $1
+}
+
 function check_config_validate() {
     conf_file="/usr/local/etc/sing-box/$1.json"
 
@@ -180,6 +192,10 @@ function shadowtls() {
 
     check_config_validate $conf_name
     restart
+
+    server_link="ss://2022-blake3-chacha20-poly1305:$shadowtls_password@$server_ip:10004?shadow-tls={"version":"3","host":"www.apple.com","password":"$shadowtls_password"}
+
+    gen_url_qr $server_link
 }
 
 function test() {
@@ -213,10 +229,12 @@ menu() {
     echo "#############################################################"
     echo ""
     echo -e " ${GREEN}1.${PLAIN} 安装 Sing-Box"
-    echo -e " ${GREEN}2.${PLAIN} 配置 Vless+XTLS+uTLS+Reality"
-    echo -e " ${GREEN}3.${PLAIN} 配置 Hysteria2"
-    echo -e " ${GREEN}4.${PLAIN} 配置 ShadowTLS"
+    echo -e " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+    echo -e " ${GREEN}2.${PLAIN} 配置 Vless+XTLS+uTLS+Reality${RED}(推荐)"
+    echo -e " ${GREEN}3.${PLAIN} 配置 Hysteria2${RED}(推荐)"
+    echo -e " ${GREEN}4.${PLAIN} 配置 SS+ShadowTLS"
     echo -e " ${GREEN}5.${PLAIN} 配置 Tuic V5"
+    echo -e " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
     echo -e " ${GREEN}0.${PLAIN} 退出脚本"
     echo ""
     read -rp "请输入选项 [0-7]: " menuInput
