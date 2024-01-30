@@ -139,8 +139,7 @@ function hy2() {
     conf_name="hy2"
     check_config_exit $conf_name
     common_command
-    sni="https:\/\/bing.com"
-    peer="https://bing.com"
+    sni="bing.com"
 
     mkdir -p /etc/hysteria && openssl ecparam -genkey -name prime256v1 -out /etc/hysteria/private.key && openssl req -new -x509 -days 3650 -key /etc/hysteria/private.key -out /etc/hysteria/cert.pem -subj "/CN=bing.com"
 
@@ -156,7 +155,7 @@ function hy2() {
 
     green "二维码"
 
-    qrencode -o - -t ANSIUTF8 "hysteria2://$password@$server_ip:10003?insecure=1&obfs=none&peer=$peer#Hysteria2($server_ip)"
+    qrencode -o - -t ANSIUTF8 "hysteria2://$password@$server_ip:10003?insecure=1&obfs=none&sni=$sni#Hysteria2($server_ip)"
 
     check_config_validate $conf_name
     restart
