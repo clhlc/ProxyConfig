@@ -140,12 +140,10 @@ function vless_reality() {
 
     server_link="vless://$uuid@$server_ip:$port?security=reality&flow=xtls-rprx-vision&sni=gateway.icloud.com&fp=chrome&pbk=$public_key&sid=$short_id&type=tcp&headerType=none#Reality($server_ip)"
 
-    qrencode -t ANSIUTF8 $server_link
-
-    red "Link: $server_link"
-
     check_config_validate $conf_name
     restart
+
+    gen_url_qr $server_link
 }
 
 function hy2() {
@@ -164,16 +162,12 @@ function hy2() {
 
     cat /usr/local/etc/sing-box/$conf_name.json
 
-    echo "====================================="
-
-    red "Link: hysteria2://$password@$server_ip:10003?insecure=1&obfs=none&peer=$peer#Hysteria2($server_ip)"
-
-    green "二维码"
-
-    qrencode -o - -t ANSIUTF8 "hysteria2://$password@$server_ip:10003?insecure=1&obfs=none&sni=$sni#Hysteria2($server_ip)"
+    server_link="hysteria2://$password@$server_ip:10003?insecure=1&obfs=none&sni=$sni#Hysteria2($server_ip)"
 
     check_config_validate $conf_name
     restart
+
+    gen_url_qr $server_link
 }
 
 function shadowtls() {
@@ -203,10 +197,10 @@ function shadowtls() {
     check_config_validate $conf_name
     restart
 
-    b1=$(echo -n "2022-blake3-chacha20-poly1305:$shadowtls_password@$server_ip"|base64)
-    b2=$(echo -n \{\"version\":\"3\",\"host\":\"www.apple.com\",\"password\":"\"$shadowtls_password"\"\}|base64)
+    b1=$(echo -n "2022-blake3-chacha20-poly1305:$shadowtls_password@$server_ip:10004"|base64 -w 0)
+    b2=$(echo -n \{\"version\":\"3\",\"host\":\"www.apple.com\",\"password\":"\"$shadowtls_password"\"\}|base64 -w 0)
 
-    server_link="ss://$b1:10004?shadow-tls=$b2#SS+Shadowtls($server_ip)"
+    server_link="ss://$b1?shadow-tls=$b2#SS+Shadowtls($server_ip)"
 
     gen_url_qr $server_link
 }
