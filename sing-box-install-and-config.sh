@@ -203,8 +203,8 @@ function shadowtls() {
     check_config_validate $conf_name
     restart
 
-    b1=$(echo -n "2022-blake3-chacha20-poly1305:$shadowtls_password@$server_ip")|base64
-    b2=$(echo -n \{\"version\":\"3\",\"host\":\"www.apple.com\",\"password\":"\"$shadowtls_password"\"\})|base64
+    b1=$(echo -n "2022-blake3-chacha20-poly1305:$shadowtls_password@$server_ip"|base64)
+    b2=$(echo -n \{\"version\":\"3\",\"host\":\"www.apple.com\",\"password\":"\"$shadowtls_password"\"\}|base64)
 
     server_link="ss://$b1:10004?shadow-tls=$b2#SS+Shadowtls($server_ip)"
 
