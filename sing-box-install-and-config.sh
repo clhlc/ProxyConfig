@@ -32,6 +32,7 @@ function common_command() {
     cloud=$(curl -s ipinfo.io/$server_ip/org|awk '{print $2}')
     city=$(curl -s ipinfo.io/$server_ip/city)
     uuid=$(/usr/bin/sing-box generate uuid)
+    hn=$(hostname)
     password=$(LC_ALL=C tr -dc 'a-zA-Z0-9' </dev/urandom | fold -w 16 | head -n 1)
 }
 
@@ -173,7 +174,7 @@ function hy2() {
 
     cat /usr/local/etc/sing-box/$conf_name.json
 
-    server_link="hysteria2://$password@$server_ip:10003?insecure=1&obfs=none&sni=$sni#Hysteria2($cloud $city $server_ip)"
+    server_link="hysteria2://$password@$server_ip:10003?insecure=1&obfs=none&sni=$sni#Hysteria2($cloud $hn)"
 
     check_config_validate $conf_name
     restart
