@@ -11,7 +11,11 @@
                     "password": "PASSWORD"
                 }
             ],
-            "masquerade": "SNI",
+            "masquerade": {
+                "type": "proxy",
+                "url": "SNI",
+                "rewrite_host": true
+            },
             "tls": {
                 "enabled": true,
                 "alpn": [
