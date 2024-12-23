@@ -78,7 +78,7 @@ function restart_sing_box {
 }
 
 function view_sing_box_log {
-    systemctl status sing-box.service --no-pager -l
+    systemctl status sing-box.service
 }
 
 function install_sing_box() {
@@ -255,39 +255,41 @@ function tuic-v5() {
 
 function menu() {
     clear
-    echo -e "#############################################################"
-    echo -e "#               ${RED}Sing-Box 一键安装脚本${PLAIN}                       #"
-    echo -e "# ${GREEN}作者${PLAIN}: clhlc                                               #"
-    echo -e "# ${GREEN}GitHub 项目${PLAIN}: https://github.com/clhlc/ProxyConfig         #"
-    echo "#############################################################"
-    echo ""
-    echo -e " ${GREEN}0.${PLAIN} 初始化 VPS"
-    echo -e " ${GREEN}1.${PLAIN} 安装 Sing-Box"
-    echo -e " ${GREEN}2.${PLAIN} 卸载 Sing-Box"
-    echo -e " ${GREEN}3.${PLAIN} 重启 Sing-Box"
-    echo -e " ${GREEN}4.${PLAIN} 查看 Sing-Box 日志"
-    echo -e " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-    echo -e " ${GREEN}11.${PLAIN} 配置 Hysteria2${RED}(推荐)"
-    echo -e " ${GREEN}12.${PLAIN} 配置 Vless+XTLS+uTLS+Reality${RED}(推荐)"
-    echo -e " ${GREEN}13.${PLAIN} 配置 SS+ShadowTLS"
-    echo -e " ${GREEN}14.${PLAIN} 配置 Tuic V5"
-    echo -e " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-    echo -e " ${GREEN}10.${PLAIN} 退出脚本"
-    echo ""
-    read -rp "请输入选项: " menuInput
-    case $menuInput in
-    0) init_vps ;;
-    1) install_sing_box ;;
-    2) uninstall_sing_box ;;
-    3) restart_sing_box ;;
-    4) view_sing_box_log ;;
-    11) hy2 ;;
-    12) vless_reality ;;
-    13) shadowtls ;;
-    14) tuic ;;
-    99) test ;;
-    *) exit 0 ;;
-    esac
+    while true; do
+        echo -e "#############################################################"
+        echo -e "#               ${RED}Sing-Box 一键安装脚本${PLAIN}                       #"
+        echo -e "# ${GREEN}作者${PLAIN}: clhlc                                               #"
+        echo -e "# ${GREEN}GitHub 项目${PLAIN}: https://github.com/clhlc/ProxyConfig         #"
+        echo "#############################################################"
+        echo ""
+        echo -e " ${GREEN}0.${PLAIN} 初始化 VPS"
+        echo -e " ${GREEN}1.${PLAIN} 安装 Sing-Box"
+        echo -e " ${GREEN}2.${PLAIN} 卸载 Sing-Box"
+        echo -e " ${GREEN}3.${PLAIN} 重启 Sing-Box"
+        echo -e " ${GREEN}4.${PLAIN} 查看 Sing-Box 日志"
+        echo -e " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+        echo -e " ${GREEN}11.${PLAIN} 配置 Hysteria2${RED}(推荐)"
+        echo -e " ${GREEN}12.${PLAIN} 配置 Vless+XTLS+uTLS+Reality${RED}(推荐)"
+        echo -e " ${GREEN}13.${PLAIN} 配置 SS+ShadowTLS"
+        echo -e " ${GREEN}14.${PLAIN} 配置 Tuic V5"
+        echo -e " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+        echo -e " ${GREEN}10.${PLAIN} 退出脚本"
+        echo ""
+        read -rp "请输入选项: " menuInput
+        case $menuInput in
+        0) init_vps ;;
+        1) install_sing_box ;;
+        2) uninstall_sing_box ;;
+        3) restart_sing_box ;;
+        4) view_sing_box_log ;;
+        11) hy2 ;;
+        12) vless_reality ;;
+        13) shadowtls ;;
+        14) tuic ;;
+        99) test ;;
+        *) exit 0 ;;
+        esac
+    done
 }
 
 menu
