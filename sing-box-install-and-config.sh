@@ -67,6 +67,20 @@ function check_config_validate() {
     fi
 }
 
+function uninstall_sing_box() {
+    rm /usr/bin/sing-box
+    rm /etc/systemd/system/sing-box.service
+    rm -rf /usr/local/etc/sing-box
+}
+
+function restart_sing_box {
+    systemctl restart sing-box.service
+}
+
+function view_sing_box_log {
+    systemctl status sing-box.service --no-pager -l
+}
+
 function install_sing_box() {
     latest_version_tag=$(curl -s "https://api.github.com/repos/SagerNet/sing-box/releases" | grep -Po '"tag_name": "\K.*?(?=")' | head -n 1)
     latest_version=${latest_version_tag#v}
@@ -249,22 +263,28 @@ function menu() {
     echo ""
     echo -e " ${GREEN}0.${PLAIN} 初始化 VPS"
     echo -e " ${GREEN}1.${PLAIN} 安装 Sing-Box"
+    echo -e " ${GREEN}2.${PLAIN} 卸载 Sing-Box"
+    echo -e " ${GREEN}3.${PLAIN} 重启 Sing-Box"
+    echo -e " ${GREEN}4.${PLAIN} 查看 Sing-Box 日志"
     echo -e " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-    echo -e " ${GREEN}2.${PLAIN} 配置 Vless+XTLS+uTLS+Reality${RED}(推荐)"
-    echo -e " ${GREEN}3.${PLAIN} 配置 Hysteria2${RED}(推荐)"
-    echo -e " ${GREEN}4.${PLAIN} 配置 SS+ShadowTLS"
-    echo -e " ${GREEN}5.${PLAIN} 配置 Tuic V5"
+    echo -e " ${GREEN}11.${PLAIN} 配置 Hysteria2${RED}(推荐)"
+    echo -e " ${GREEN}12.${PLAIN} 配置 Vless+XTLS+uTLS+Reality${RED}(推荐)"
+    echo -e " ${GREEN}13.${PLAIN} 配置 SS+ShadowTLS"
+    echo -e " ${GREEN}14.${PLAIN} 配置 Tuic V5"
     echo -e " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
     echo -e " ${GREEN}10.${PLAIN} 退出脚本"
     echo ""
-    read -rp "请输入选项 [0-5]: " menuInput
+    read -rp "请输入选项: " menuInput
     case $menuInput in
     0) init_vps ;;
     1) install_sing_box ;;
-    2) vless_reality ;;
-    3) hy2 ;;
-    4) shadowtls ;;
-    5) tuic ;;
+    2) uninstall_sing_box ;;
+    3) restart_sing_box ;;
+    4) view_sing_box_log ;;
+    11) hy2 ;;
+    12) vless_reality ;;
+    13) shadowtls ;;
+    14) tuic ;;
     99) test ;;
     *) exit 0 ;;
     esac
