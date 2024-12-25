@@ -158,7 +158,7 @@ function vless_reality() {
 
     short_id=$(/usr/bin/sing-box generate rand --hex 8)
 
-    port=$((RANDOM % 1001 + 10000))
+    port=10004
 
     wget -O /usr/local/etc/sing-box/$conf_name.json https://raw.githubusercontent.com/clhlc/ProxyConfig/main/Sing-Box/VLESS-XTLS-uTLS-REALITY/config.json
 
