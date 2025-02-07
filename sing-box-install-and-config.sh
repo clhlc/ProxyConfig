@@ -254,7 +254,6 @@ function tuic-v5() {
 }
 
 function menu() {
-    clear
     while true; do
         echo -e "#############################################################"
         echo -e "#               ${RED}Sing-Box 一键安装脚本${PLAIN}                       #"
