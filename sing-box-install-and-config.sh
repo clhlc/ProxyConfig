@@ -246,8 +246,8 @@ function tuic-v5() {
 
     wget -O /usr/local/etc/sing-box/$conf_name.json https://raw.githubusercontent.com/clhlc/ProxyConfig/main/Sing-Box/TUIC/config.json
 
-    sed -i "s/PASSWORD/$password/g" /usr/local/etc/sing-box/$conf_name
-    sed -i "s/UUID/$uuid/g" /usr/local/etc/sing-box/$conf_name
+    sed -i "s/PASSWORD/$password/g" /usr/local/etc/sing-box/$conf_name.json
+    sed -i "s/UUID/$uuid/g" /usr/local/etc/sing-box/$conf_name.json
 
     check_config_validate $conf_name
     restart
