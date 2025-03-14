@@ -284,7 +284,7 @@ function menu() {
         11) hy2 ;;
         12) vless_reality ;;
         13) shadowtls ;;
-        14) tuic ;;
+        14) tuic-v5 ;;
         99) test ;;
         *) exit 0 ;;
         esac
