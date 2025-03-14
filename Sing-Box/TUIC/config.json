@@ -3,7 +3,7 @@
         {
             "type": "tuic",
             "listen": "::",
-            "listen_port": 443,
+            "listen_port": 10006,
             "users": [
                 {
                     "uuid": "UUID",
@@ -16,8 +16,8 @@
                 "alpn": [
                     "h3"
                 ],
-                "certificate_path": "/etc/tuic/fullchain.cer",
-                "key_path": "/etc/tuic/private.key"
+                "certificate_path": "/etc/hysteria/cert.pem",
+                "key_path": "/etc/hysteria/private.key"
             }
         }
     ],
