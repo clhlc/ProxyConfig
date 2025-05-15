@@ -3,7 +3,7 @@
         {
             "type": "anytls",
             "listen": "::",
-            "listen_port": 10005,
+            "listen_port": 10006,
             "users": [
                 {
                     "password": "PASSWORD"

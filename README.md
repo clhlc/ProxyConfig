@@ -7,6 +7,7 @@
 Hysteria2|10003
 Vless Reality|10004
 ShadowTLS|10005
+Anytls|10006
 Tuic|443
 
 在各个云厂商的防火墙或者安全组需要对公网开放端口
