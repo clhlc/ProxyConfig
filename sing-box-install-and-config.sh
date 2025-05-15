@@ -25,6 +25,8 @@ function init_vps() {
     apt install -yqq qrencode net-tools
 
     iptables -F
+
+    mkdir -p /etc/sb_ssl && openssl ecparam -genkey -name prime256v1 -out /etc/sb_ssl/private.key && openssl req -new -x509 -days 3650 -key /etc/sb_ssl/private.key -out /etc/sb_ssl/cert.pem -subj "/CN=bing.com"
 }
 
 function common_command() {
@@ -303,7 +305,7 @@ function menu() {
         12) vless_reality ;;
         13) shadowtls ;;
         14) tuic-v5 ;;
-        14) anytls ;;
+        15) anytls ;;
         99) test ;;
         *) exit 0 ;;
         esac
