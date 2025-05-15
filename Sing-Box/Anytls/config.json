@@ -1,0 +1,19 @@
+{
+    "inbounds": [
+        {
+            "type": "anytls",
+            "listen": "::",
+            "listen_port": 10005,
+            "users": [
+                {
+                    "password": "PASSWORD"
+                }
+            ]
+        }
+    ],
+    "outbounds": [
+        {
+            "type": "direct"
+        }
+    ]
+}

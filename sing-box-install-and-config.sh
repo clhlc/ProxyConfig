@@ -253,6 +253,23 @@ function tuic-v5() {
     restart
 }
 
+function anytls() {
+
+    conf_name="anytls"
+
+    common_command $conf_name
+    
+    check_config_exit $conf_name
+
+    wget -O /usr/local/etc/sing-box/$conf_name.json https://raw.githubusercontent.com/clhlc/ProxyConfig/main/Sing-Box/Anytls/config.json
+
+    sed -i "s/PASSWORD/$password/g" /usr/local/etc/sing-box/$conf_name.json
+
+    check_config_validate $conf_name
+
+    restart
+}
+
 function menu() {
     while true; do
         echo -e "#############################################################"
@@ -271,6 +288,7 @@ function menu() {
         echo -e " ${GREEN}12.${PLAIN} 配置 Vless+XTLS+uTLS+Reality${RED}(推荐)"
         echo -e " ${GREEN}13.${PLAIN} 配置 SS+ShadowTLS"
         echo -e " ${GREEN}14.${PLAIN} 配置 Tuic V5"
+        echo -e " ${GREEN}15.${PLAIN} 配置 Anytls"
         echo -e " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
         echo -e " ${GREEN}10.${PLAIN} 退出脚本"
         echo ""
@@ -285,6 +303,7 @@ function menu() {
         12) vless_reality ;;
         13) shadowtls ;;
         14) tuic-v5 ;;
+        14) anytls ;;
         99) test ;;
         *) exit 0 ;;
         esac
