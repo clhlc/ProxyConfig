@@ -9,13 +9,20 @@
                     "password": "PASSWORD"
                 }
             ],
-	        "tls": {
+            "tls": {
                 "enabled": true,
-                "alpn": [
-                    "h3"
-                ],
-                "certificate_path": "/etc/sb_ssl/cert.pem",
-                "key_path": "/etc/sb_ssl/private.key"
+                "server_name": "SERVER_NAME",
+                "reality": {
+                    "enabled": true,
+                    "handshake": {
+                        "server": "SERVER",
+                        "server_port": 443
+                    },
+                    "private_key": "PRIVATE_KEY",
+                    "short_id": [
+                        "SHORT_ID"
+                    ]
+                }
             }
         }
     ],

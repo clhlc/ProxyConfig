@@ -36,6 +36,14 @@ function common_command() {
     uuid=$(/usr/bin/sing-box generate uuid)
     hn=$(hostname)
     password=$(LC_ALL=C tr -dc 'a-zA-Z0-9' </dev/urandom | fold -w 16 | head -n 1)
+
+    key_pair=$(/usr/bin/sing-box generate reality-keypair)
+
+    private_key=$(echo "$key_pair" | awk '/PrivateKey/ {print $2}' | tr -d '"')
+
+    public_key=$(echo "$key_pair" | awk '/PublicKey/ {print $2}' | tr -d '"')
+
+    short_id=$(/usr/bin/sing-box generate rand --hex 8)
 }
 
 function check_config_exit() {
@@ -243,7 +251,8 @@ function tuic-v5() {
 
     conf_name="tuic-v5"
 
-    common_command $conf_name
+    common_command
+
     check_config_exit $conf_name
 
     wget -O /usr/local/etc/sing-box/$conf_name.json https://raw.githubusercontent.com/clhlc/ProxyConfig/main/Sing-Box/TUIC/config.json
@@ -259,13 +268,13 @@ function anytls() {
 
     conf_name="anytls"
 
-    common_command $conf_name
+    common_command
     
     check_config_exit $conf_name
 
     wget -O /usr/local/etc/sing-box/$conf_name.json https://raw.githubusercontent.com/clhlc/ProxyConfig/main/Sing-Box/Anytls/config.json
 
-    sed -i "s/PASSWORD/$password/g" /usr/local/etc/sing-box/$conf_name.json
+    sed -i "s/PASSWORD/$password/g; s/SERVER_NAME/gateway\.icloud\.com/g; s/SERVER/gateway\.icloud\.com/g; s/PRIVATE_KEY/$private_key/g; s/SHORT_ID/$short_id/g" /usr/local/etc/sing-box/$conf_name.json
 
     check_config_validate $conf_name
 
@@ -290,7 +299,7 @@ function menu() {
         echo -e " ${GREEN}12.${PLAIN} 配置 Vless+XTLS+uTLS+Reality${RED}(推荐)"
         echo -e " ${GREEN}13.${PLAIN} 配置 SS+ShadowTLS"
         echo -e " ${GREEN}14.${PLAIN} 配置 Tuic V5"
-        echo -e " ${GREEN}15.${PLAIN} 配置 Anytls"
+        echo -e " ${GREEN}15.${PLAIN} 配置 Anytls+Reality"
         echo -e " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
         echo -e " ${GREEN}10.${PLAIN} 退出脚本"
         echo ""
